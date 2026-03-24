@@ -18,6 +18,7 @@ public class GameWindow extends JFrame {
     // OrderManager orderManager = new OrderManager();
 
     public GameWindow() {
+        setTitle("Kitchen Master");
         setFocusable(true);
         add(gameField);
         // setUndecorated(true);          // entfernt Rahmen + Titelleiste
@@ -30,7 +31,6 @@ public class GameWindow extends JFrame {
         // gd.setFullScreenWindow(this);  // echtes Fullscreen
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
-        setTitle("Kitchen Master");
 
         gameField.repaint();
         t.start();
@@ -38,10 +38,12 @@ public class GameWindow extends JFrame {
 
     private void doOnTick() {
         Point mouse = getMousePosition();
-
         if (mouse != null) {
-            gameField.debug.setX(mouse.x - 33);
-            gameField.debug.setY(mouse.y - 60);
+            // Wandelt die Fenster-Koordinaten in lokale Koordinaten des GameFields um
+            Point relativeMouse = SwingUtilities.convertPoint(this, mouse, gameField);
+
+            gameField.debug.setX(relativeMouse.x);
+            gameField.debug.setY(relativeMouse.y);
             gameField.repaint();
         }
     }

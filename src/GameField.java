@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Vector;
 
 public class GameField extends JPanel {
-    private final Dimension prefSize = new Dimension(800, 400);
+    private final Dimension prefSize = new Dimension(1400, 900);
     public int test = 0;
     public Coordinate debug = new Coordinate(0,0);
 
@@ -33,21 +33,22 @@ public class GameField extends JPanel {
 
         screenWidth = screenSize.width;
         screenHeight = screenSize.height;
+        System.out.println(getSize());
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        System.out.println(getSize());
         // Farbe setzen
         g.setColor(Color.BLUE);
 
         // Viereck zeichnen (x, y, Breite, Höhe)
-        g.fillRect(0, screenHeight/3*2, screenWidth, screenHeight/3);
+        g.fillRect(0, getSize().height/3*2, getSize().width, screenHeight/3);
 //        g.fillOval(debug.getX(), debug.getY(), 67, 67);
         try {
-            BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/img.png"));
-            g.drawImage(iconeNave, debug.getX()-200, debug.getY()-200, 670, 670, null);
+            BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/img_1.png"));
+            g.drawImage(iconeNave, debug.getX()+10, debug.getY()+30, 40, 40, null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
