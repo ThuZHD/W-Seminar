@@ -18,9 +18,11 @@ import java.util.Map;
 import java.util.Vector;
 
 public class GameField extends JPanel {
+
     private final Dimension prefSize = new Dimension(1400, 900);
     public int test = 0;
     public Coordinate debug = new Coordinate(0,0);
+    BufferedImage iconeNave;
 
     int screenWidth;
     int screenHeight;
@@ -34,6 +36,17 @@ public class GameField extends JPanel {
         screenWidth = screenSize.width;
         screenHeight = screenSize.height;
         System.out.println(getSize());
+
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+        try {
+            iconeNave = ImageIO.read(getClass().getResource("/resources/img_1.png"));
+            Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                    cursorImg, new Point(0, 0), "blank cursor");
+            setCursor(blankCursor);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -46,12 +59,9 @@ public class GameField extends JPanel {
         // Viereck zeichnen (x, y, Breite, Höhe)
         g.fillRect(0, getSize().height/3*2, getSize().width, screenHeight/3);
 //        g.fillOval(debug.getX(), debug.getY(), 67, 67);
-        try {
-            BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/img_1.png"));
-            g.drawImage(iconeNave, debug.getX()+10, debug.getY()+30, 40, 40, null);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//            BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/img_1.png"));
+        g.drawImage(iconeNave, debug.getX()-20, debug.getY()-20, 40, 40, null);
+
 
 
     }
