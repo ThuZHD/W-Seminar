@@ -15,20 +15,20 @@ public class GameWindow extends JFrame {
         }
     });
 
-    OrderManager orderManager = new OrderManager();
+    // OrderManager orderManager = new OrderManager();
 
     public GameWindow() {
         setFocusable(true);
         add(gameField);
-        setUndecorated(true);          // entfernt Rahmen + Titelleiste
+        // setUndecorated(true);          // entfernt Rahmen + Titelleiste
         pack();
 
         GraphicsDevice gd = GraphicsEnvironment
                 .getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice();
 
-        gd.setFullScreenWindow(this);  // echtes Fullscreen
-
+        // gd.setFullScreenWindow(this);  // echtes Fullscreen
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
         setTitle("Kitchen Master");
 
