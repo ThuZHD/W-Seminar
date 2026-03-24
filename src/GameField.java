@@ -22,10 +22,17 @@ public class GameField extends JPanel {
     public int test = 0;
     public Coordinate debug = new Coordinate(0,0);
 
+    int screenWidth;
+    int screenHeight;
 
     public GameField() {
         setPreferredSize(prefSize);
         setBackground(Color.cyan);
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        screenWidth = screenSize.width;
+        screenHeight = screenSize.height;
     }
 
     @Override
@@ -36,10 +43,10 @@ public class GameField extends JPanel {
         g.setColor(Color.BLUE);
 
         // Viereck zeichnen (x, y, Breite, Höhe)
-        g.fillRect(0, 200, 800, 200);
+        g.fillRect(0, screenHeight/3*2, screenWidth, screenHeight/3);
 //        g.fillOval(debug.getX(), debug.getY(), 67, 67);
         try {
-            BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/Bild.png"));
+            BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/img.png"));
             g.drawImage(iconeNave, debug.getX()-200, debug.getY()-200, 670, 670, null);
         } catch (IOException e) {
             throw new RuntimeException(e);

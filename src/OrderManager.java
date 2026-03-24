@@ -1,9 +1,20 @@
 import org.json.*;
 
 public class OrderManager {
-    String test = "['here', 'ach here']";
+    // JSON Arrays nutzen doppelte Anführungszeichen
+    String test = "[\"here\", \"ach here\"]";
 
     public OrderManager () {
-        JSONObject obj = new JSONObject(test);
+        try {
+            // Wir nutzen JSONArray statt JSONObject
+            JSONArray array = new JSONArray(test);
+
+            // Jetzt kannst du auf die Daten zugreifen:
+            String firstEntry = array.getString(1);
+            System.out.println("Erster Eintrag: " + firstEntry);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
