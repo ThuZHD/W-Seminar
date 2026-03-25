@@ -15,10 +15,11 @@ public class GameWindow extends JFrame {
         }
     });
 
-    // OrderManager orderManager = new OrderManager();
+     OrderManager orderManager = new OrderManager();
 
     public GameWindow() {
         setTitle("Kitchen Master");
+        setMinimumSize(new Dimension(400, 400));
         setFocusable(true);
         add(gameField);
         // setUndecorated(true);          // entfernt Rahmen + Titelleiste

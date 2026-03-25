@@ -2,7 +2,7 @@ import org.json.*;
 
 public class OrderManager {
     // JSON Arrays nutzen doppelte Anführungszeichen
-    String test = "[\"here\", \"ach here\"]";
+    String test = "[\"here\", \"auch here\"]";
 
     public OrderManager () {
         try {

@@ -19,7 +19,7 @@ import java.util.Vector;
 
 public class GameField extends JPanel {
 
-    private final Dimension prefSize = new Dimension(1400, 900);
+    private final Dimension prefSize = new Dimension(400, 90);
     public int test = 0;
     public Coordinate debug = new Coordinate(0,0);
     BufferedImage iconeNave;
@@ -40,7 +40,7 @@ public class GameField extends JPanel {
         BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 
         try {
-            iconeNave = ImageIO.read(getClass().getResource("/resources/img_1.png"));
+            iconeNave = ImageIO.read(getClass().getResource("/resources/img.png"));
             Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
                     cursorImg, new Point(0, 0), "blank cursor");
             setCursor(blankCursor);
@@ -52,15 +52,16 @@ public class GameField extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println(getSize());
         // Farbe setzen
         g.setColor(Color.BLUE);
 
         // Viereck zeichnen (x, y, Breite, Höhe)
         g.fillRect(0, getSize().height/3*2, getSize().width, screenHeight/3);
+        g.setColor(Color.red);
+        g.fillRect(0, getSize().height - 300, 200, 200);
 //        g.fillOval(debug.getX(), debug.getY(), 67, 67);
 //            BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/img_1.png"));
-        g.drawImage(iconeNave, debug.getX()-20, debug.getY()-20, 40, 40, null);
+        g.drawImage(iconeNave, debug.getX()-20, debug.getY()-20, 160, 200, null);
 
 
 
