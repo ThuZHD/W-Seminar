@@ -32,6 +32,7 @@ public class GameField extends JPanel {
 
 
     Food food = new Food();
+    Ingredient brot = new Ingredient();
 
     public GameField() {
         setPreferredSize(prefSize);
@@ -93,6 +94,6 @@ public class GameField extends JPanel {
 //       BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/img_1.png"));
         g.drawImage(iconeNave, debug.getX()-20, debug.getY()-20, 160, 200, null);
 
-
+        brot.draw((Graphics2D) g);
     }
 }
