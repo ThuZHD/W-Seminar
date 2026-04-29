@@ -3,20 +3,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Food {
 
     BufferedImage brot;
 
-    BufferedImage tomate_base;
-    BufferedImage tomate_top;
-    BufferedImage zwiebel_top;
-    BufferedImage zwiebel_base;
-
-    BufferedImage salat_top;
-    BufferedImage salat_base;
-
-    BufferedImage fleisch;
+    ArrayList<Ingredient> test = new ArrayList<Ingredient>();
 
     int x =6;
     int y=7;
@@ -42,16 +35,11 @@ public class Food {
         try {
             brot = ImageIO.read(getClass().getResource("/resources/Döner/Brot.png"));
 
-            tomate_base = ImageIO.read(getClass().getResource("/resources/Döner/Tomate Base.png"));
-            tomate_top = ImageIO.read(getClass().getResource("/resources/Döner/Tomate Top.png"));
+            test.add(new Ingredient());
+            test.get(test.size()-1).setImages("resources/Döner/Tomate Base.png", "resources/Döner/Tomate Top.png");
 
-            zwiebel_top = ImageIO.read(getClass().getResource("/resources/Döner/Zwiebel Top.png"));
-            zwiebel_base = ImageIO.read(getClass().getResource("/resources/Döner/Zwiebel Base.png"));
-
-//            salat_top = ImageIO.read(getClass().getResource("/resources/Döner/Salat Top.png"));
-//            salat_base = ImageIO.read(getClass().getResource("/resources/Döner/Salat Base.png"));
-
-            fleisch = ImageIO.read(getClass().getResource("/resources/Döner/Fleisch.png"));
+            test.add(new Ingredient());
+            test.get(test.size()-1).setImages("resources/Döner/Salat Base.png", "resources/Döner/Salat Top.png");
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -62,13 +50,13 @@ public class Food {
 
     public void draw(Graphics2D g) {
         g.drawImage(brot, x, y, 100, 100, null);
-        g.drawImage(tomate_base, x, y, 100, 100, null);
-        g.drawImage(zwiebel_base, x, y, 100, 100, null);
-        g.drawImage(salat_base, x, y, 100, 100, null);
 
-        g.drawImage(fleisch, x, y, 100, 100, null);
-        g.drawImage(zwiebel_top, x, y, 100, 100, null);
-        g.drawImage(salat_top, x, y, 100, 100, null);
-        g.drawImage(tomate_top, x, y, 100, 100, null);
+        for (int i = 0; i < test.size(); i++) {
+            g.drawImage(test.get(i).base, x, y, 100, 100, null);
+        }
+
+        for (int i = 0; i < test.size(); i++) {
+            g.drawImage(test.get(i).top, x, y, 100, 100, null);
+        }
     }
 }

@@ -32,9 +32,6 @@ public class GameField extends JPanel {
 
 
     Food food = new Food();
-    Ingredient brot = new Ingredient();
-    Ingredient salat = new Ingredient();
-    Ingredient tomaten = new Ingredient();
 
     public GameField() {
         setPreferredSize(prefSize);
@@ -79,10 +76,6 @@ public class GameField extends JPanel {
 
             }
         });
-
-        brot.setImages("/resources/Döner/Brot.png", "/resources/Döner/Brot.png");
-        salat.setImages("/resources/Döner/Salat Base.png", "/resources/Döner/Salat Top.png");
-        tomaten.setImages("/resources/Döner/Tomate Base.png", "/resources/Döner/Tomate Top.png");
     }
 
     @Override
@@ -99,11 +92,5 @@ public class GameField extends JPanel {
 //        g.fillOval(debug.getX(), debug.getY(), 67, 67);
 //       BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/img_1.png"));
         g.drawImage(iconeNave, debug.getX()-20, debug.getY()-20, 160, 200, null);
-
-        brot.drawBase((Graphics2D) g);
-        tomaten.drawBase((Graphics2D) g);
-        salat.drawBase((Graphics2D) g);
-        tomaten.drawTop((Graphics2D) g);
-        salat.drawTop((Graphics2D) g);
     }
 }

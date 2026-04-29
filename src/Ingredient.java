@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Ingredient {
-    BufferedImage top;
-    BufferedImage base;
+    public BufferedImage top;
+    public BufferedImage base;
 
     public Ingredient() {
         try {
