@@ -32,6 +32,7 @@ public class GameField extends JPanel {
 
 
     Food food = new Food();
+    IngredientSpawner tomatenSpawner = new IngredientSpawner();
 
     public GameField() {
         setPreferredSize(prefSize);
@@ -53,7 +54,7 @@ public class GameField extends JPanel {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                food.toggleIsFollowingMouse(debug.getX(), debug.getY());
+                clickHandler(debug.getX(), debug.getY());
             }
 
             @Override
@@ -76,6 +77,11 @@ public class GameField extends JPanel {
 
             }
         });
+
+//        food.addIngredient("/resources/Döner/Tomate Base.png", "/resources/Döner/Tomate Top.png");
+        food.addIngredient("/resources/Döner/Zwiebel Base.png", "/resources/Döner/Zwiebel Top.png");
+        food.addIngredient("/resources/Döner/Salat Base.png", "/resources/Döner/Salat Top.png");
+
     }
 
     @Override
@@ -87,10 +93,14 @@ public class GameField extends JPanel {
         food.setPos(debug.getX()-50, debug.getY()-50);
         food.draw((Graphics2D) g);
 
-        // Viereck zeichnen (x, y, Breite, Höhe)
-
-//        g.fillOval(debug.getX(), debug.getY(), 67, 67);
-//       BufferedImage iconeNave = ImageIO.read(getClass().getResource("/resources/img_1.png"));
         g.drawImage(iconeNave, debug.getX()-20, debug.getY()-20, 160, 200, null);
+        tomatenSpawner.drawSpawner((Graphics2D) g);
+        tomatenSpawner.drawIngredient((Graphics2D) g);
+        tomatenSpawner.setPos(debug.getX()-50, debug.getY()-50);
+    }
+
+    void clickHandler(int xMousePos, int yMousePos) {
+        food.toggleIsFollowingMouse(xMousePos, yMousePos);
+        tomatenSpawner.toggleIsFollowingMouse(xMousePos, yMousePos);
     }
 }
