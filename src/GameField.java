@@ -29,9 +29,24 @@ public class GameField extends JPanel {
     int screenWidth;
     int screenHeight;
 
+    String activeIngredientBase;
+    String activeIngredientTop;
 
+    boolean isGrabbingIngredient = false;
 
     Food food = new Food();
+
+    void iHateMyLife(String Base, String Top) {
+        if (
+                (debug.getX() - 50 - food.x > -40 && debug.getX() - 50 - food.x < 40) &&
+                        (debug.getY() - 50 - food.y > -40 && debug.getY() - 50 - food.y < 40) && isGrabbingIngredient
+        ) {
+            System.out.println("Fick Denis");
+            food.addIngredient("/resources/Döner/Tomate Base.png", "/resources/Döner/Tomate Top.png");
+            tomatenSpawner.reset();
+        }
+    }
+
     IngredientSpawner tomatenSpawner = new IngredientSpawner();
 
     public GameField() {
@@ -101,6 +116,7 @@ public class GameField extends JPanel {
 
     void clickHandler(int xMousePos, int yMousePos) {
         food.toggleIsFollowingMouse(xMousePos, yMousePos);
-        tomatenSpawner.toggleIsFollowingMouse(xMousePos, yMousePos);
+        isGrabbingIngredient = tomatenSpawner.toggleIsFollowingMouse(xMousePos, yMousePos);
+        iHateMyLife("", "");
     }
 }

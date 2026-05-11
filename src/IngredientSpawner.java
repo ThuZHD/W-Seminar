@@ -11,11 +11,15 @@ public class IngredientSpawner {
 
     int x = 600;
     int y = 700;
+    int x_0 = 600;
+    int y_0 = 700;
 
     public IngredientSpawner() {
         try {
             spawner = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/Döner/Tomate Top.png")));
             ingredient = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/Döner/Tomate Top.png")));
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -33,7 +37,7 @@ public class IngredientSpawner {
         }
     }
 
-    public void toggleIsFollowingMouse(int xPos, int yPos) {
+    public boolean toggleIsFollowingMouse(int xPos, int yPos) {
         System.out.println("here");
         if (
                 (xPos - 50 - x > -40 && xPos - 50 - x < 40) &&
@@ -41,6 +45,14 @@ public class IngredientSpawner {
         ) {
             isFollowingMouse = !isFollowingMouse;
             System.out.println("toggled following");
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    public void reset() {
+        x = x_0;
+        y = y_0;
     }
 }
