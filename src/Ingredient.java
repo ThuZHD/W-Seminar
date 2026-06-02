@@ -9,12 +9,6 @@ public class Ingredient {
     public BufferedImage base;
 
     public Ingredient() {
-        try {
-            base = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/Döner/Fleisch.png")));
-            top = ImageIO.read(Objects.requireNonNull(getClass().getResource("/resources/Döner/Fleisch.png")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void setImages(String baseImage, String topImage) {

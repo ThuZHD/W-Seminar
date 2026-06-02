@@ -38,13 +38,11 @@ public class IngredientSpawner {
     }
 
     public boolean toggleIsFollowingMouse(int xPos, int yPos) {
-        System.out.println("here");
         if (
                 (xPos - 50 - x > -40 && xPos - 50 - x < 40) &&
                         (yPos - 50 - y > -40 && yPos - 50 - y < 40)
         ) {
             isFollowingMouse = !isFollowingMouse;
-            System.out.println("toggled following");
             return true;
         } else {
             return false;

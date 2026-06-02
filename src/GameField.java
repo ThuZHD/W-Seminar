@@ -1,30 +1,14 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.plaf.TextUI;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ImageObserver;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderableImage;
-import java.io.IOException;
-import java.text.AttributedCharacterIterator;
-import java.util.Map;
-import java.util.Vector;
 
 public class GameField extends JPanel {
 
+    // unneceseary 
     private final Dimension prefSize = new Dimension(400, 90);
-    public int test = 0;
-    public Coordinate debug = new Coordinate(0,0);
-    BufferedImage iconeNave;
+    public Coordinate mouseCoordinate = new Coordinate(0,0);
 
     int screenWidth;
     int screenHeight;
@@ -34,15 +18,14 @@ public class GameField extends JPanel {
 
     boolean isGrabbingIngredient = false;
 
-    Food food = new Food();
+    Food debugKebab = new Food();
 
-    void iHateMyLife(String Base, String Top) {
+    void addIngedientToFood(String Base, String Top) {
         if (
-                (debug.getX() - 50 - food.x > -40 && debug.getX() - 50 - food.x < 40) &&
-                        (debug.getY() - 50 - food.y > -40 && debug.getY() - 50 - food.y < 40) && isGrabbingIngredient
+                (mouseCoordinate.getX() - 50 - debugKebab.x > -40 && mouseCoordinate.getX() - 50 - debugKebab.x < 40) &&
+                        (mouseCoordinate.getY() - 50 - debugKebab.y > -40 && mouseCoordinate.getY() - 50 - debugKebab.y < 40) && isGrabbingIngredient
         ) {
-            System.out.println("Fick Denis");
-            food.addIngredient("/resources/Döner/Tomate Base.png", "/resources/Döner/Tomate Top.png");
+            debugKebab.addIngredient("/resources/Döner/Tomate Base.png", "/resources/Döner/Tomate Top.png");
             tomatenSpawner.reset();
         }
     }
@@ -57,7 +40,6 @@ public class GameField extends JPanel {
 
         screenWidth = screenSize.width;
         screenHeight = screenSize.height;
-        System.out.println(getSize());
 
         BufferedImage cursorImg;
 
@@ -69,7 +51,7 @@ public class GameField extends JPanel {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                clickHandler(debug.getX(), debug.getY());
+                clickHandler(mouseCoordinate.getX(), mouseCoordinate.getY());
             }
 
             @Override
@@ -94,8 +76,8 @@ public class GameField extends JPanel {
         });
 
 //        food.addIngredient("/resources/Döner/Tomate Base.png", "/resources/Döner/Tomate Top.png");
-        food.addIngredient("/resources/Döner/Zwiebel Base.png", "/resources/Döner/Zwiebel Top.png");
-        food.addIngredient("/resources/Döner/Salat Base.png", "/resources/Döner/Salat Top.png");
+        debugKebab.addIngredient("/resources/Döner/Zwiebel Base.png", "/resources/Döner/Zwiebel Top.png");
+        debugKebab.addIngredient("/resources/Döner/Salat Base.png", "/resources/Döner/Salat Top.png");
 
     }
 
@@ -105,18 +87,17 @@ public class GameField extends JPanel {
         // Farbe setzen
         g.setColor(Color.BLUE);
         g.fillRect(0, getSize().height/3*2, getSize().width, screenHeight/3);
-        food.setPos(debug.getX()-50, debug.getY()-50);
-        food.draw((Graphics2D) g);
+        debugKebab.setPos(mouseCoordinate.getX()-50, mouseCoordinate.getY()-50);
+        debugKebab.draw((Graphics2D) g);
 
-        g.drawImage(iconeNave, debug.getX()-20, debug.getY()-20, 160, 200, null);
         tomatenSpawner.drawSpawner((Graphics2D) g);
         tomatenSpawner.drawIngredient((Graphics2D) g);
-        tomatenSpawner.setPos(debug.getX()-50, debug.getY()-50);
+        tomatenSpawner.setPos(mouseCoordinate.getX()-50, mouseCoordinate.getY()-50);
     }
 
     void clickHandler(int xMousePos, int yMousePos) {
-        food.toggleIsFollowingMouse(xMousePos, yMousePos);
+        debugKebab.toggleIsFollowingMouse(xMousePos, yMousePos);
         isGrabbingIngredient = tomatenSpawner.toggleIsFollowingMouse(xMousePos, yMousePos);
-        iHateMyLife("", "");
+        addIngedientToFood("", "");
     }
 }

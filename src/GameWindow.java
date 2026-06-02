@@ -15,7 +15,8 @@ public class GameWindow extends JFrame {
         }
     });
 
-     OrderManager orderManager = new OrderManager();
+//     OrderManager orderManager = new OrderManager();
+    ModManager modManager = new ModManager();
 
     public GameWindow() {
         setTitle("Kitchen Master");
@@ -43,8 +44,8 @@ public class GameWindow extends JFrame {
             // Wandelt die Fenster-Koordinaten in lokale Koordinaten des GameFields um
             Point relativeMouse = SwingUtilities.convertPoint(this, mouse, gameField);
 
-            gameField.debug.setX(relativeMouse.x);
-            gameField.debug.setY(relativeMouse.y);
+            gameField.mouseCoordinate.setX(relativeMouse.x);
+            gameField.mouseCoordinate.setY(relativeMouse.y);
             gameField.repaint();
         }
     }

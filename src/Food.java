@@ -1,15 +1,15 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import javax.swing.*;
 
 public class Food {
 
-    BufferedImage brot;
+    BufferedImage baseImage;
 
-    ArrayList<Ingredient> test = new ArrayList<Ingredient>();
+    ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>();
 
     int x = 6;
     int y = 7;
@@ -24,10 +24,8 @@ public class Food {
     }
 
     public void toggleIsFollowingMouse(int xPos, int yPos) {
-        System.out.println(
-            (xPos - x > -40 && xPos - x < 40) &&
-                (yPos - y > -40 && yPos - y < 40)
-        );
+        // check hitbox
+        // System.out.println((xPos - x > -40 && xPos - x < 40) && (yPos - y > -40 && yPos - y < 40));
         if (
             (xPos - 50 - x > -40 && xPos - 50 - x < 40) &&
             (yPos - 50 - y > -40 && yPos - 50 - y < 40)
@@ -38,8 +36,8 @@ public class Food {
 
     public Food() {
         try {
-            brot = ImageIO.read(
-                getClass().getResource("/resources/Döner/Brot.png")
+            baseImage = ImageIO.read(
+                    new File("/Users/brunobeuttler/Desktop/everything/Code/W-Sem/src/resources/Döner/Brot.png")
             );
 
 
@@ -49,21 +47,21 @@ public class Food {
     }
 
     public void draw(Graphics2D g) {
-        g.drawImage(brot, x, y, 100, 100, null);
+        g.drawImage(baseImage, x, y, 100, 100, null);
 
-        for (int i = 0; i < test.size(); i++) {
-            g.drawImage(test.get(i).base, x, y, 100, 100, null);
+        for (int i = 0; i < ingredientArrayList.size(); i++) {
+            g.drawImage(ingredientArrayList.get(i).base, x, y, 100, 100, null);
         }
 
-        for (int i = 0; i < test.size(); i++) {
-            g.drawImage(test.get(i).top, x, y, 100, 100, null);
+        for (int i = 0; i < ingredientArrayList.size(); i++) {
+            g.drawImage(ingredientArrayList.get(i).top, x, y, 100, 100, null);
         }
     }
 
     public void addIngredient(String base, String top) {
-        test.add(new Ingredient());
-        test
-            .get(test.size() - 1)
+        ingredientArrayList.add(new Ingredient());
+        ingredientArrayList
+            .get(ingredientArrayList.size() - 1)
             .setImages(
                     base,
                     top
