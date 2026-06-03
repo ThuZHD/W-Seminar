@@ -93,6 +93,7 @@ public class GameField extends JPanel {
         tomatenSpawner.drawSpawner((Graphics2D) g);
         tomatenSpawner.drawIngredient((Graphics2D) g);
         tomatenSpawner.setPos(mouseCoordinate.getX()-50, mouseCoordinate.getY()-50);
+        g.drawString("test", 100, 100);
     }
 
     void clickHandler(int xMousePos, int yMousePos) {

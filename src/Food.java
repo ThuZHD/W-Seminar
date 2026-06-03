@@ -37,7 +37,7 @@ public class Food {
     public Food() {
         try {
             baseImage = ImageIO.read(
-                    new File("/Users/brunobeuttler/Desktop/everything/Code/W-Sem/src/resources/Döner/Brot.png")
+                    new File("/home/thuz/Development/W-Seminar/src/resources/Döner/Brot.png")
             );
 
 
