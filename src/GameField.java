@@ -1,8 +1,12 @@
+import netscape.javascript.JSObject;
+import org.json.JSONArray;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class GameField extends JPanel {
 
@@ -12,9 +16,6 @@ public class GameField extends JPanel {
 
     int screenWidth;
     int screenHeight;
-
-    String activeIngredientBase;
-    String activeIngredientTop;
 
     boolean isGrabbingIngredient = false;
 
@@ -31,6 +32,8 @@ public class GameField extends JPanel {
     }
 
     IngredientSpawner tomatenSpawner = new IngredientSpawner();
+
+    ArrayList<String> availableIngredientsNameList = new ArrayList<String>();
 
     public GameField() {
         setPreferredSize(prefSize);
@@ -74,8 +77,6 @@ public class GameField extends JPanel {
 
             }
         });
-
-//        food.addIngredient("/resources/Döner/Tomate Base.png", "/resources/Döner/Tomate Top.png");
         debugKebab.addIngredient("/resources/Döner/Zwiebel Base.png", "/resources/Döner/Zwiebel Top.png");
         debugKebab.addIngredient("/resources/Döner/Salat Base.png", "/resources/Döner/Salat Top.png");
 
@@ -93,12 +94,24 @@ public class GameField extends JPanel {
         tomatenSpawner.drawSpawner((Graphics2D) g);
         tomatenSpawner.drawIngredient((Graphics2D) g);
         tomatenSpawner.setPos(mouseCoordinate.getX()-50, mouseCoordinate.getY()-50);
-        g.drawString("test", 100, 100);
+//        g.drawString("test", 100, 100);
+
+        for (int i = 0; i < availableIngredientsNameList.size(); i++) {
+            g.drawString(availableIngredientsNameList.get(i), 100, 100 + i * 20);
+        }
     }
 
     void clickHandler(int xMousePos, int yMousePos) {
         debugKebab.toggleIsFollowingMouse(xMousePos, yMousePos);
         isGrabbingIngredient = tomatenSpawner.toggleIsFollowingMouse(xMousePos, yMousePos);
         addIngedientToFood("", "");
+    }
+
+    public void setAvailableIngredients(JSONArray ingredients) {
+        System.out.println("these are all the available ingredients: " + ingredients);
+//        ingredients.forEach();
+        ingredients.forEach(item -> {
+            availableIngredientsNameList.add(item.toString());
+        });
     }
 }

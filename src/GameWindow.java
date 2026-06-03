@@ -36,7 +36,7 @@ public class GameWindow extends JFrame {
 
         gameField.repaint();
         t.start();
-        System.out.println(modManager.testFoodObject());
+        gameField.setAvailableIngredients(modManager.testFoodObject());
     }
 
     private void doOnTick() {
