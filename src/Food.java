@@ -7,54 +7,64 @@ import javax.imageio.ImageIO;
 
 public class Food {
 
+    boolean isSpawnBase = true;
+
     BufferedImage baseImage;
 
     ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>();
 
-    int x = 6;
-    int y = 7;
+    int xPos = 100;
+    int yPos = 100;
+
+    int width = 100;
+    int height = 100;
+
+    String imagePath;
 
     boolean isFollowingMouse = false;
 
     public void setPos(int xPos, int yPos) {
-        if (isFollowingMouse) {
-            x = xPos;
-            y = yPos;
-        }
+        this.xPos = xPos;
+        this.yPos = yPos;
     }
 
-    public void toggleIsFollowingMouse(int xPos, int yPos) {
-        // check hitbox
-        // System.out.println((xPos - x > -40 && xPos - x < 40) && (yPos - y > -40 && yPos - y < 40));
-        if (
-            (xPos - 50 - x > -40 && xPos - 50 - x < 40) &&
-            (yPos - 50 - y > -40 && yPos - 50 - y < 40)
-        ) {
-            isFollowingMouse = !isFollowingMouse;
+    public int getXPos() {return this.xPos;}
+    public int getYPos() {return this.yPos;}
+    public int getWidth() {return this.width;}
+    public int getHeight() {return this.height;}
+    public String getImage() {return this.imagePath;}
+
+    public boolean disableSpawn() {
+        if(isSpawnBase) {
+            isSpawnBase = false;
+            System.out.println("spawner disabled");
+            return true;
         }
+        return false;
     }
 
-    public Food() {
+    public void setup(int xPos, int yPos, int width, int height, String imagePath) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.width = width;
+        this.height = height;
+        this.imagePath = imagePath;
         try {
-            baseImage = ImageIO.read(
-                    new File("/home/thuz/Development/W-Seminar/src/resources/Döner/Brot.png")
-            );
-
-
+            baseImage = ImageIO.read(new File(imagePath));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void draw(Graphics2D g) {
-        g.drawImage(baseImage, x, y, 100, 100, null);
+        g.drawImage(baseImage, xPos, yPos, width, height, null);
 
         for (int i = 0; i < ingredientArrayList.size(); i++) {
-            g.drawImage(ingredientArrayList.get(i).base, x, y, 100, 100, null);
+            g.drawImage(ingredientArrayList.get(i).base, xPos, yPos, height, width, null);
         }
 
         for (int i = 0; i < ingredientArrayList.size(); i++) {
-            g.drawImage(ingredientArrayList.get(i).top, x, y, 100, 100, null);
+            g.drawImage(ingredientArrayList.get(i).top, xPos, yPos, width, height, null);
         }
     }
 
