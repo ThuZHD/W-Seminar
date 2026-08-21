@@ -10,8 +10,10 @@ public class Food {
     boolean isSpawnBase = true;
 
     BufferedImage baseImage;
+    BufferedImage topImage;
 
-    ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>();
+    ArrayList<BufferedImage> baseIngredientImages = new ArrayList<BufferedImage>();
+    ArrayList<BufferedImage> topIngredientImages = new ArrayList<BufferedImage>();
 
     int xPos = 100;
     int yPos = 100;
@@ -19,9 +21,10 @@ public class Food {
     int width = 100;
     int height = 100;
 
-    String imagePath;
+    String basePath;
+    String topPath;
 
-    boolean isFollowingMouse = false;
+    ArrayList<String> addedIngredients = new ArrayList<String>();
 
     public void setPos(int xPos, int yPos) {
         this.xPos = xPos;
@@ -32,7 +35,9 @@ public class Food {
     public int getYPos() {return this.yPos;}
     public int getWidth() {return this.width;}
     public int getHeight() {return this.height;}
-    public String getImage() {return this.imagePath;}
+    public String getTopImagePath() {return this.topPath;}
+    public String getBaseImagePath() {return this.basePath;}
+
 
     public boolean disableSpawn() {
         if(isSpawnBase) {
@@ -43,38 +48,42 @@ public class Food {
         return false;
     }
 
-    public void setup(int xPos, int yPos, int width, int height, String imagePath) {
+    public void setup(int xPos, int yPos, int width, int height, String baseImagePath, String topImagePath) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.width = width;
         this.height = height;
-        this.imagePath = imagePath;
+        this.basePath = baseImagePath;
+        this.topPath = topImagePath;
         try {
-            baseImage = ImageIO.read(new File(imagePath));
+            baseImage = ImageIO.read(new File(baseImagePath));
+            topImage = ImageIO.read(new File(topImagePath));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void draw(Graphics2D g) {
+    public void drawBase(Graphics2D g) {
         g.drawImage(baseImage, xPos, yPos, width, height, null);
-
-        for (int i = 0; i < ingredientArrayList.size(); i++) {
-            g.drawImage(ingredientArrayList.get(i).base, xPos, yPos, height, width, null);
+        for(BufferedImage image: baseIngredientImages) {
+            g.drawImage(image, xPos, yPos, height, width, null);
         }
 
-        for (int i = 0; i < ingredientArrayList.size(); i++) {
-            g.drawImage(ingredientArrayList.get(i).top, xPos, yPos, width, height, null);
+        for(BufferedImage image: topIngredientImages) {
+            g.drawImage(image, xPos, yPos, height, width, null);
         }
     }
 
-    public void addIngredient(String base, String top) {
-        ingredientArrayList.add(new Ingredient());
-        ingredientArrayList
-            .get(ingredientArrayList.size() - 1)
-            .setImages(
-                    base,
-                    top
-            );
+    public void drawTop(Graphics2D g) {
+        g.drawImage(topImage, xPos, yPos, width, height, null);
+    }
+
+    public void addIngredient(String name, BufferedImage baseImage, BufferedImage topImage) {
+        System.out.println("here im Food");
+
+        baseIngredientImages.add(baseImage);
+        topIngredientImages.add(topImage);
+        addedIngredients.add(name);
+        System.out.println("added new Ingredient: " + name);
     }
 }

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class GameField extends JPanel {
 
-    // unneceseary
     private final Dimension prefSize = new Dimension(400, 90);
     public Coordinate mouseCoordinate = new Coordinate(0,0);
 
@@ -23,36 +22,34 @@ public class GameField extends JPanel {
     boolean isGrabbingIngredient = false;
     boolean isGrabbingFood = false;
 
-    // activeGrabbedFood might be "-1", in this case no food is being grabed
+    // activeGrabbedFood might be "-1", in this case no food is being grabbed
     int activeGrabbedFood = -1;
     int activeGrabbedIngredient = -1;
 
     ArrayList<Food> foodArrayList = new ArrayList<Food>();
+    ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>();
 
-    ArrayList<String> log = new ArrayList<String>();
-
-    void addIngedientToFood(String Base, String Top) {
-        for(Food food : foodArrayList) {
+    void addIngedientToFood() {
+        for (int i = 0; i < foodArrayList.size(); i++) {
             if (
-                    (mouseCoordinate.getX() - 50 - food.getXPos() > -40 && mouseCoordinate.getX() - 50 - food.getYPos() < 40) &&
-                            (mouseCoordinate.getY() - 50 - food.getYPos() > -40 && mouseCoordinate.getY() - 50 - food.getYPos() < 40) && isGrabbingIngredient
+                    (mouseCoordinate.getX() - 50 - foodArrayList.get(i).getXPos() > -40 && mouseCoordinate.getX() - 50 - foodArrayList.get(i).getXPos() < 40) &&
+                            (mouseCoordinate.getY() - 50 - foodArrayList.get(i).getYPos() > -40 && mouseCoordinate.getY() - 50 - foodArrayList.get(i).getYPos() < 40)
             ) {
-                food.addIngredient("/resources/Döner/Tomate Base.png", "/resources/Döner/Tomate Top.png");
-                tomatenSpawner.reset();
+                foodArrayList.get(i).addIngredient(ingredientArrayList.get(activeGrabbedIngredient).getName(), ingredientArrayList.get(activeGrabbedIngredient).getBaseBufferedImage(), ingredientArrayList.get(activeGrabbedIngredient).getTopBufferedImage());
+                ingredientArrayList.remove(activeGrabbedIngredient);
             }
         }
     }
 
-    int checkMouseOverItem(int mouseXPos, int mouseYPos) {
+    int checkMouseOverFoodItem(int mouseXPos, int mouseYPos) {
         for (int i = 0; i < foodArrayList.size(); i++) {
             if (
                     (mouseCoordinate.getX() - 50 - foodArrayList.get(i).getXPos() > -40 && mouseCoordinate.getX() - 50 - foodArrayList.get(i).getXPos() < 40) &&
-                            (mouseCoordinate.getY() - 50 - foodArrayList.get(i).getYPos() > -40 && mouseCoordinate.getY() - 50 - foodArrayList.get(i).yPos < 40)
+                            (mouseCoordinate.getY() - 50 - foodArrayList.get(i).getYPos() > -40 && mouseCoordinate.getY() - 50 - foodArrayList.get(i).getYPos() < 40)
             ) {
-                log.add("yes " + i);
                 if(foodArrayList.get(i).disableSpawn()) {
                     Food newFoodSpawner = new Food();
-                    newFoodSpawner.setup(foodArrayList.get(i).getXPos(), foodArrayList.get(i).getYPos(), foodArrayList.get(i).getWidth(), foodArrayList.get(i).getHeight(), foodArrayList.get(i).getImage());
+                    newFoodSpawner.setup(foodArrayList.get(i).getXPos(), foodArrayList.get(i).getYPos(), foodArrayList.get(i).getWidth(), foodArrayList.get(i).getHeight(), foodArrayList.get(i).getBaseImagePath(), foodArrayList.get(i).getTopImagePath());
                     foodArrayList.add(newFoodSpawner);
                 }
                 return i;
@@ -61,12 +58,24 @@ public class GameField extends JPanel {
         return -1;
     }
 
-    IngredientSpawner tomatenSpawner = new IngredientSpawner();
-
-    ArrayList<String> availableIngredientsNameList = new ArrayList<String>();
+    int checkMouseOverIngredientItem(int mouseXPos, int mouseYPos) {
+        for (int i = 0; i < ingredientArrayList.size(); i++) {
+            if (
+                    (mouseCoordinate.getX() - 50 - ingredientArrayList.get(i).getXPos() > -40 && mouseCoordinate.getX() - 50 - ingredientArrayList.get(i).getXPos() < 40) &&
+                            (mouseCoordinate.getY() - 50 - ingredientArrayList.get(i).getYPos() > -40 && mouseCoordinate.getY() - 50 - ingredientArrayList.get(i).getYPos() < 40)
+            ) {
+                if(ingredientArrayList.get(i).disableSpawn()) {
+                    Ingredient newIngredientSpawner = new Ingredient();
+                    newIngredientSpawner.setup(ingredientArrayList.get(i).getName(), ingredientArrayList.get(i).getXPos(), ingredientArrayList.get(i).getYPos(), ingredientArrayList.get(i).getWidth(), ingredientArrayList.get(i).getHeight(), ingredientArrayList.get(i).getBaseImagePath(), ingredientArrayList.get(i).getTopImagePath());
+                    ingredientArrayList.add(newIngredientSpawner);
+                }
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public GameField() {
-
         // self explaining
         {
             setPreferredSize(prefSize);
@@ -89,25 +98,35 @@ public class GameField extends JPanel {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(!isGrabbingFood) {
-                    // checkMouseOverItem may return -1, this means no food is being grabbed 
-                    activeGrabbedFood = checkMouseOverItem(mouseCoordinate.getX(), mouseCoordinate.getY());
+
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if(!isGrabbingFood && !isGrabbingIngredient) {
+                    // checkMouseOverItem may return -1, this means no food is being grabbed
+                    activeGrabbedFood = checkMouseOverFoodItem(mouseCoordinate.getX(), mouseCoordinate.getY());
                     if(activeGrabbedFood != -1) {
                         isGrabbingFood = true;
-                        System.out.println("here");
                     }
                 } else {
                     isGrabbingFood = false;
                 }
 
-                if(!isGrabbingIngredient) {
-
+                if(isGrabbingIngredient) {
+                    addIngedientToFood();
                 }
-            }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-
+                if(!isGrabbingIngredient && !isGrabbingFood) {
+                    // checkMouseOverItem may return -1, this means no food is being grabbed
+                    activeGrabbedIngredient = checkMouseOverIngredientItem(mouseCoordinate.getX(), mouseCoordinate.getY());
+                    if(activeGrabbedIngredient != -1) {
+                        isGrabbingIngredient = true;
+                    }
+                } else {
+                    isGrabbingIngredient = false;
+                }
             }
 
             @Override
@@ -159,44 +178,51 @@ public class GameField extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Farbe setzen
         g.setColor(Color.BLUE);
         g.fillRect(0, getSize().height/3*2, getSize().width, screenHeight/3);
 
-        tomatenSpawner.drawSpawner((Graphics2D) g);
-        tomatenSpawner.drawIngredient((Graphics2D) g);
-        tomatenSpawner.setPos(mouseCoordinate.getX()-50, mouseCoordinate.getY()-50);
 
         g.setColor(Color.BLACK);
 
-        for (int i = 0; i < log.size(); i++) {
-            g.drawString(log.get(i), 20, 50 + i * 20);
-        }
-
         if(isGrabbingFood) {
             foodArrayList.get(activeGrabbedFood).setPos(mouseCoordinate.getX() - 50, mouseCoordinate.getY() - 50);
-//            System.out.println("here, but why?");
+        }
+
+        if(isGrabbingIngredient) {
+            ingredientArrayList.get(activeGrabbedIngredient).setPos(mouseCoordinate.getX() - 50, mouseCoordinate.getY() - 50);
         }
 
         for(Food food : foodArrayList) {
-            food.draw((Graphics2D) g);
+            food.drawBase((Graphics2D) g);
+        }
+
+        for(Ingredient ingredient : ingredientArrayList) {
+            ingredient.drawBase((Graphics2D) g);
+        }
+
+        for(Ingredient ingredient : ingredientArrayList) {
+            ingredient.drawTop((Graphics2D) g);
+        }
+
+        for(Food food : foodArrayList) {
+            food.drawTop((Graphics2D) g);
         }
     }
 
-    public void setAvailableIngredients(JSONArray ingredients) {
-        System.out.println("these are all the available ingredients: " + ingredients);
-//        ingredients.forEach();
-        ingredients.forEach(item -> {
-            log.add("ingredient found: " + item.toString());
-        });
+    public void setupFoodSpawnersInField(JSONArray spawners, String relativePath) {
+        for (int i = 0; i < spawners.length(); i++) {
+            Food newFoodSpawner = new Food();
+            newFoodSpawner.setup(spawners.getJSONObject(i).getInt("xPos"), spawners.getJSONObject(i).getInt("yPos"), spawners.getJSONObject(i).getInt("width"), spawners.getJSONObject(i).getInt("height"), Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString(), Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString());
+            foodArrayList.add(newFoodSpawner);
+        }
     }
 
-    public void setupSpawnersInField(JSONArray spawners, String relativePath) {
+    public void setupIngredientSpawnersInField(JSONArray spawners, String relativePath) {
+        System.out.println(spawners);
         for (int i = 0; i < spawners.length(); i++) {
-//            System.out.println(spawners.getJSONObject(i).getInt("xPos"));
-            Food newFoodSpawner = new Food();
-            newFoodSpawner.setup(spawners.getJSONObject(i).getInt("xPos"), spawners.getJSONObject(i).getInt("yPos"), spawners.getJSONObject(i).getInt("width"), spawners.getJSONObject(i).getInt("height"), Path.of(relativePath, spawners.getJSONObject(i).getString("path")).toString());
-            foodArrayList.add(newFoodSpawner);
+            Ingredient newIngredient = new Ingredient();
+            newIngredient.setup(spawners.getJSONObject(i).getString("name"), spawners.getJSONObject(i).getInt("xPos"), spawners.getJSONObject(i).getInt("yPos"), spawners.getJSONObject(i).getInt("width"), spawners.getJSONObject(i).getInt("height"), Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString(), Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString());
+            ingredientArrayList.add(newIngredient);
         }
     }
 }
