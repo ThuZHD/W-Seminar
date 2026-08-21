@@ -7,20 +7,24 @@ import java.util.Objects;
 
 public class Ingredient {
     boolean isSpawnBase = true;
-
     String name = "";
 
-    public BufferedImage top;
-    public BufferedImage base;
+    public BufferedImage top; // the foundation image of the ingredient
+    public BufferedImage base; // the top image layer
 
+    // positions and dimensions
     int xPos = 100;
     int yPos = 100;
 
     int width = 100;
     int height = 100;
 
-    String baseImagePath;
-    String topImagePath;
+    String baseImagePath; // path of the top layer image
+    String topImagePath; // path of the foundation image
+
+    //
+    // SET-GET Functions
+    //
 
     public void setPos(int xPos, int yPos) {
         this.xPos = xPos;
@@ -38,6 +42,11 @@ public class Ingredient {
     public BufferedImage getBaseBufferedImage() {return this.base;}
     public BufferedImage getTopBufferedImage() {return this.top;}
 
+    //
+    // Functions
+    //
+
+    // checks if ingredient is still a spawner and returns the value, if isSpawnBase, the spawner gets disabled
     public boolean disableSpawn() {
         if(isSpawnBase) {
             isSpawnBase = false;
@@ -47,6 +56,7 @@ public class Ingredient {
         return false;
     }
 
+    // sets all values and loads the starting images
     public void setup(String name, int xPos, int yPos, int width, int height, String baseImagePath, String topImagePath) {
         this.name = name;
         this.xPos = xPos;
@@ -64,10 +74,12 @@ public class Ingredient {
         }
     }
 
+    // executed every tick, draws the foundation image
     public void drawBase(Graphics2D g) {
         g.drawImage(base, xPos, yPos, width, height, null);
     }
 
+    // executed every tick, draws the top layer image
     public void drawTop(Graphics2D g) {
         g.drawImage(top, xPos, yPos, width, height, null);
     }

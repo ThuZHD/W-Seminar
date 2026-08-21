@@ -1,5 +1,6 @@
 import org.json.JSONArray;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -7,28 +8,31 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
 
 public class GameField extends JPanel {
-
-    private final Dimension prefSize = new Dimension(400, 90);
     public Coordinate mouseCoordinate = new Coordinate(0,0);
 
-    int screenWidth;
-    int screenHeight;
-
-    boolean isGrabbingIngredient = false;
     boolean isGrabbingFood = false;
+    boolean isGrabbingIngredient = false;
 
-    // activeGrabbedFood might be "-1", in this case no food is being grabbed
+    // activeGrabbedFood/activeGrabbedIngredient might be "-1", in this case no food/ingredient is being grabbed
     int activeGrabbedFood = -1;
     int activeGrabbedIngredient = -1;
 
     ArrayList<Food> foodArrayList = new ArrayList<Food>();
     ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>();
 
+    BufferedImage backgroundImage;
+
+    //
+    // Functions
+    //
+
+    // adds the active ingredient to the food the mouse is hovering over
     void addIngedientToFood() {
         for (int i = 0; i < foodArrayList.size(); i++) {
             if (
@@ -78,13 +82,7 @@ public class GameField extends JPanel {
     public GameField() {
         // self explaining
         {
-            setPreferredSize(prefSize);
             setBackground(Color.cyan);
-
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-            screenWidth = screenSize.width;
-            screenHeight = screenSize.height;
 
             BufferedImage cursorImg;
 
@@ -98,7 +96,6 @@ public class GameField extends JPanel {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
 
             }
 
@@ -145,10 +142,10 @@ public class GameField extends JPanel {
             }
         });;
 
-//        spieleSound("/Users/brunobeuttler/Downloads/yusuf.wav", 6, true);
+//        playAudio("/Users/brunobeuttler/Downloads/yusuf.wav", 6, true);
     }
 
-    private Clip spieleSound(String dateipfad, float lautstarke, boolean loop) {
+    private Clip playAudio(String dateipfad, float lautstarke, boolean loop) {
         try {
             AudioInputStream audio = AudioSystem.getAudioInputStream(new File(dateipfad));
             Clip clip = AudioSystem.getClip();
@@ -178,9 +175,6 @@ public class GameField extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.BLUE);
-        g.fillRect(0, getSize().height/3*2, getSize().width, screenHeight/3);
-
 
         g.setColor(Color.BLACK);
 
@@ -191,6 +185,8 @@ public class GameField extends JPanel {
         if(isGrabbingIngredient) {
             ingredientArrayList.get(activeGrabbedIngredient).setPos(mouseCoordinate.getX() - 50, mouseCoordinate.getY() - 50);
         }
+
+        g.drawImage(backgroundImage, 0, 0, 1280, 720, null);
 
         for(Food food : foodArrayList) {
             food.drawBase((Graphics2D) g);
@@ -212,7 +208,14 @@ public class GameField extends JPanel {
     public void setupFoodSpawnersInField(JSONArray spawners, String relativePath) {
         for (int i = 0; i < spawners.length(); i++) {
             Food newFoodSpawner = new Food();
-            newFoodSpawner.setup(spawners.getJSONObject(i).getInt("xPos"), spawners.getJSONObject(i).getInt("yPos"), spawners.getJSONObject(i).getInt("width"), spawners.getJSONObject(i).getInt("height"), Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString(), Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString());
+            newFoodSpawner.setup(
+                    spawners.getJSONObject(i).getInt("xPos"),
+                    spawners.getJSONObject(i).getInt("yPos"),
+                    spawners.getJSONObject(i).getInt("width"),
+                    spawners.getJSONObject(i).getInt("height"),
+                    Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString(),
+                    Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString()
+            );
             foodArrayList.add(newFoodSpawner);
         }
     }
@@ -221,8 +224,24 @@ public class GameField extends JPanel {
         System.out.println(spawners);
         for (int i = 0; i < spawners.length(); i++) {
             Ingredient newIngredient = new Ingredient();
-            newIngredient.setup(spawners.getJSONObject(i).getString("name"), spawners.getJSONObject(i).getInt("xPos"), spawners.getJSONObject(i).getInt("yPos"), spawners.getJSONObject(i).getInt("width"), spawners.getJSONObject(i).getInt("height"), Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString(), Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString());
+            newIngredient.setup(
+                    spawners.getJSONObject(i).getString("name"),
+                    spawners.getJSONObject(i).getInt("xPos"),
+                    spawners.getJSONObject(i).getInt("yPos"),
+                    spawners.getJSONObject(i).getInt("width"),
+                    spawners.getJSONObject(i).getInt("height"),
+                    Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString(),
+                    Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString()
+            );
             ingredientArrayList.add(newIngredient);
+        }
+    }
+
+    public void setUpBackgroundImage(String imagePath) {
+        try {
+            backgroundImage = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

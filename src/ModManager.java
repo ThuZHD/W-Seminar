@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class ModManager {
 
+    // returns a cleaned up JSON array of all food spawners from the main file
     public JSONArray setupFoodSpawners(String path) {
         try {
             String jsonContent = new String(Files.readAllBytes(Paths.get(path)));
@@ -33,6 +34,7 @@ public class ModManager {
         return null;
     }
 
+    // returns a cleaned up JSON array of all ingredient spawners from the main file
     public JSONArray setupIngredientSpawners(String path) {
         try {
             String jsonContent = new String(Files.readAllBytes(Paths.get(path)));

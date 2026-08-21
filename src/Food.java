@@ -8,23 +8,27 @@ import javax.imageio.ImageIO;
 public class Food {
 
     boolean isSpawnBase = true;
-
-    BufferedImage baseImage;
-    BufferedImage topImage;
+    BufferedImage baseImage; // the foundation image of the food
+    BufferedImage topImage; // the image layer which is rendered on top of all ingredients
 
     ArrayList<BufferedImage> baseIngredientImages = new ArrayList<BufferedImage>();
     ArrayList<BufferedImage> topIngredientImages = new ArrayList<BufferedImage>();
 
+    // positions and dimensions
     int xPos = 100;
     int yPos = 100;
 
     int width = 100;
     int height = 100;
 
-    String basePath;
-    String topPath;
+    String baseImagePath; // path of the top layer image
+    String topImagePath; // path of the foundation image
 
-    ArrayList<String> addedIngredients = new ArrayList<String>();
+    ArrayList<String> addedIngredients = new ArrayList<String>(); // all ingredients added to the food
+
+    //
+    // SET-GET Functions
+    //
 
     public void setPos(int xPos, int yPos) {
         this.xPos = xPos;
@@ -35,10 +39,14 @@ public class Food {
     public int getYPos() {return this.yPos;}
     public int getWidth() {return this.width;}
     public int getHeight() {return this.height;}
-    public String getTopImagePath() {return this.topPath;}
-    public String getBaseImagePath() {return this.basePath;}
+    public String getTopImagePath() {return this.topImagePath;}
+    public String getBaseImagePath() {return this.baseImagePath;}
 
+    //
+    // Functions
+    //
 
+    // checks if food is still a spawner and returns the value, if isSpawnBase, the spawner gets disabled
     public boolean disableSpawn() {
         if(isSpawnBase) {
             isSpawnBase = false;
@@ -48,13 +56,14 @@ public class Food {
         return false;
     }
 
+    // sets all values and loads the starting images
     public void setup(int xPos, int yPos, int width, int height, String baseImagePath, String topImagePath) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.width = width;
         this.height = height;
-        this.basePath = baseImagePath;
-        this.topPath = topImagePath;
+        this.baseImagePath = baseImagePath;
+        this.topImagePath = topImagePath;
         try {
             baseImage = ImageIO.read(new File(baseImagePath));
             topImage = ImageIO.read(new File(topImagePath));
@@ -63,6 +72,7 @@ public class Food {
         }
     }
 
+    // executed every tick, draws the foundation image and all ingredient images
     public void drawBase(Graphics2D g) {
         g.drawImage(baseImage, xPos, yPos, width, height, null);
         for(BufferedImage image: baseIngredientImages) {
@@ -74,16 +84,18 @@ public class Food {
         }
     }
 
+    // executed every tick, draws the top layer image
     public void drawTop(Graphics2D g) {
         g.drawImage(topImage, xPos, yPos, width, height, null);
     }
 
+    // adds the ingredient name and images to the food
     public void addIngredient(String name, BufferedImage baseImage, BufferedImage topImage) {
-        System.out.println("here im Food");
-
         baseIngredientImages.add(baseImage);
         topIngredientImages.add(topImage);
         addedIngredients.add(name);
+
         System.out.println("added new Ingredient: " + name);
+        System.out.println("this is added to the kebab: " + addedIngredients);
     }
 }
