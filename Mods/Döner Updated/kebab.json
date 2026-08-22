@@ -1,0 +1,51 @@
+{
+  "title": "Kebab",
+  "base": "BrotBase.png",
+  "top": "BrotTop.png",
+  "width": 150,
+  "height": 90,
+  "ingredients": [
+    {
+      "name": "Tomate",
+      "top": "TomateTop.png",
+      "base" : "TomateBase.png",
+      "xPos": 840,
+      "yPos": 450
+    },
+    {
+      "name": "Salat",
+      "top": "SalatTop.png",
+      "base" : "SalatBase.png",
+      "xPos": 1010,
+      "yPos": 450
+    },
+    {
+      "name": "Zwiebel",
+      "top": "ZwiebelTop.png",
+      "base" : "ZwiebelBase.png",
+      "xPos": 920,
+      "yPos": 610
+    },
+    {
+      "name": "Fleisch",
+      "top": "FleischTop.png",
+      "base" : "FleischBase.png",
+      "xPos": 1090,
+      "yPos": 610
+    }
+  ],
+  "spawners" : [
+    {
+      "xPos": 200,
+      "yPos": 380
+    },
+    {
+      "xPos": 150,
+      "yPos": 490
+    },
+    {
+      "xPos": 100,
+      "yPos": 600
+    }
+  ]
+}

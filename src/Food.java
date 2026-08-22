@@ -7,6 +7,8 @@ import javax.imageio.ImageIO;
 
 public class Food {
 
+    int debugIndex;
+
     boolean isSpawnBase = true;
     BufferedImage baseImage; // the foundation image of the food
     BufferedImage topImage; // the image layer which is rendered on top of all ingredients
@@ -41,6 +43,7 @@ public class Food {
     public int getHeight() {return this.height;}
     public String getTopImagePath() {return this.topImagePath;}
     public String getBaseImagePath() {return this.baseImagePath;}
+    public int getDebugIndex() {return this.debugIndex;}
 
     //
     // Functions
@@ -57,7 +60,7 @@ public class Food {
     }
 
     // sets all values and loads the starting images
-    public void setup(int xPos, int yPos, int width, int height, String baseImagePath, String topImagePath) {
+    public void setup(int xPos, int yPos, int width, int height, String baseImagePath, String topImagePath, int debugIndex) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.width = width;
@@ -70,23 +73,26 @@ public class Food {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        this.debugIndex = debugIndex;
     }
 
     // executed every tick, draws the foundation image and all ingredient images
     public void drawBase(Graphics2D g) {
         g.drawImage(baseImage, xPos, yPos, width, height, null);
         for(BufferedImage image: baseIngredientImages) {
-            g.drawImage(image, xPos, yPos, height, width, null);
+            g.drawImage(image, xPos, yPos, width, height, null);
         }
 
         for(BufferedImage image: topIngredientImages) {
-            g.drawImage(image, xPos, yPos, height, width, null);
+            g.drawImage(image, xPos, yPos, width, height, null);
         }
     }
 
     // executed every tick, draws the top layer image
     public void drawTop(Graphics2D g) {
         g.drawImage(topImage, xPos, yPos, width, height, null);
+//        g.drawString("Index " + debugIndex, xPos, yPos);
     }
 
     // adds the ingredient name and images to the food

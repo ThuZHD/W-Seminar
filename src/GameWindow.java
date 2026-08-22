@@ -29,7 +29,7 @@ public class GameWindow extends JFrame {
 
     public GameWindow() {
         setTitle("Kitchen Master");
-        setMinimumSize(new Dimension(1280, 720));
+        setMinimumSize(new Dimension(1280, 750));
         setFocusable(true);
         add(gameField);
         pack();
@@ -43,7 +43,7 @@ public class GameWindow extends JFrame {
             System.out.println(modManager.setupFoodSpawners(path));
             gameField.setupFoodSpawnersInField(modManager.setupFoodSpawners(path), directoryPath);
             gameField.setupIngredientSpawnersInField(modManager.setupIngredientSpawners(path), directoryPath);
-            gameField.setUpBackgroundImage(Paths.get(directoryPath, "background.jpeg").toString());
+            gameField.setUpBackgroundImage(Paths.get(directoryPath, "background.png").toString());
         }
     }
 

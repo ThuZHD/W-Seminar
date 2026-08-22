@@ -32,51 +32,16 @@ public class GameField extends JPanel {
     // Functions
     //
 
-    // adds the active ingredient to the food the mouse is hovering over
-    void addIngedientToFood() {
-        for (int i = 0; i < foodArrayList.size(); i++) {
-            if (
-                    (mouseCoordinate.getX() - 50 - foodArrayList.get(i).getXPos() > -40 && mouseCoordinate.getX() - 50 - foodArrayList.get(i).getXPos() < 40) &&
-                            (mouseCoordinate.getY() - 50 - foodArrayList.get(i).getYPos() > -40 && mouseCoordinate.getY() - 50 - foodArrayList.get(i).getYPos() < 40)
-            ) {
-                foodArrayList.get(i).addIngredient(ingredientArrayList.get(activeGrabbedIngredient).getName(), ingredientArrayList.get(activeGrabbedIngredient).getBaseBufferedImage(), ingredientArrayList.get(activeGrabbedIngredient).getTopBufferedImage());
-                ingredientArrayList.remove(activeGrabbedIngredient);
-            }
+    // used to check if a coordinate is in a certain area, mostly used for food and ingredient position checking with the mouse
+    boolean areaChecker(int areaBeginPosX, int areaBeginPosY, int areaWidth, int areaHeight, int checkerPosX, int checkerPosY) {
+        if (
+                (checkerPosX - areaWidth/2 - areaBeginPosX > -areaWidth/2 && checkerPosX - areaWidth/2 - areaBeginPosX < areaWidth/2) &&
+                        (checkerPosY - areaHeight/2 - areaBeginPosY > -areaHeight/2 && checkerPosY - areaHeight/2 - areaBeginPosY < areaHeight/2)
+        ) {
+            return true;
+        } else {
+            return false;
         }
-    }
-
-    int checkMouseOverFoodItem(int mouseXPos, int mouseYPos) {
-        for (int i = 0; i < foodArrayList.size(); i++) {
-            if (
-                    (mouseCoordinate.getX() - 50 - foodArrayList.get(i).getXPos() > -40 && mouseCoordinate.getX() - 50 - foodArrayList.get(i).getXPos() < 40) &&
-                            (mouseCoordinate.getY() - 50 - foodArrayList.get(i).getYPos() > -40 && mouseCoordinate.getY() - 50 - foodArrayList.get(i).getYPos() < 40)
-            ) {
-                if(foodArrayList.get(i).disableSpawn()) {
-                    Food newFoodSpawner = new Food();
-                    newFoodSpawner.setup(foodArrayList.get(i).getXPos(), foodArrayList.get(i).getYPos(), foodArrayList.get(i).getWidth(), foodArrayList.get(i).getHeight(), foodArrayList.get(i).getBaseImagePath(), foodArrayList.get(i).getTopImagePath());
-                    foodArrayList.add(newFoodSpawner);
-                }
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    int checkMouseOverIngredientItem(int mouseXPos, int mouseYPos) {
-        for (int i = 0; i < ingredientArrayList.size(); i++) {
-            if (
-                    (mouseCoordinate.getX() - 50 - ingredientArrayList.get(i).getXPos() > -40 && mouseCoordinate.getX() - 50 - ingredientArrayList.get(i).getXPos() < 40) &&
-                            (mouseCoordinate.getY() - 50 - ingredientArrayList.get(i).getYPos() > -40 && mouseCoordinate.getY() - 50 - ingredientArrayList.get(i).getYPos() < 40)
-            ) {
-                if(ingredientArrayList.get(i).disableSpawn()) {
-                    Ingredient newIngredientSpawner = new Ingredient();
-                    newIngredientSpawner.setup(ingredientArrayList.get(i).getName(), ingredientArrayList.get(i).getXPos(), ingredientArrayList.get(i).getYPos(), ingredientArrayList.get(i).getWidth(), ingredientArrayList.get(i).getHeight(), ingredientArrayList.get(i).getBaseImagePath(), ingredientArrayList.get(i).getTopImagePath());
-                    ingredientArrayList.add(newIngredientSpawner);
-                }
-                return i;
-            }
-        }
-        return -1;
     }
 
     public GameField() {
@@ -101,28 +66,60 @@ public class GameField extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                System.out.println("DEBUG COORDINATES: " + mouseCoordinate.getX() + " | " + mouseCoordinate.getY());
+
                 if(!isGrabbingFood && !isGrabbingIngredient) {
-                    // checkMouseOverItem may return -1, this means no food is being grabbed
-                    activeGrabbedFood = checkMouseOverFoodItem(mouseCoordinate.getX(), mouseCoordinate.getY());
-                    if(activeGrabbedFood != -1) {
-                        isGrabbingFood = true;
+
+                    for (int i = 0; i < foodArrayList.size(); i++) {
+                        if(areaChecker(foodArrayList.get(i).getXPos(), foodArrayList.get(i).getYPos(), foodArrayList.get(i).getWidth(), foodArrayList.get(i).getHeight(), mouseCoordinate.getX(), mouseCoordinate.getY())) {
+//                            System.out.println("food found: " + i);
+                            if (foodArrayList.get(i).disableSpawn()) {
+                                Food newFoodSpawner = new Food();
+                                newFoodSpawner.setup(foodArrayList.get(i).getXPos(), foodArrayList.get(i).getYPos(), foodArrayList.get(i).getWidth(), foodArrayList.get(i).getHeight(), foodArrayList.get(i).getBaseImagePath(), foodArrayList.get(i).getTopImagePath(), foodArrayList.size());
+                                foodArrayList.add(newFoodSpawner);
+                            }
+
+                            activeGrabbedFood = i;
+                            isGrabbingFood = true;
+                            return;
+                        }
                     }
-                } else {
+                    isGrabbingFood = false;
+
+                    for (int i = 0; i < ingredientArrayList.size(); i++) {
+                        if(areaChecker(ingredientArrayList.get(i).getXPos(), ingredientArrayList.get(i).getYPos(), ingredientArrayList.get(i).getWidth(), ingredientArrayList.get(i).getHeight(), mouseCoordinate.getX(), mouseCoordinate.getY())) {
+//                            System.out.println("ingredient found: " + i);
+
+                            if (ingredientArrayList.get(i).disableSpawn()) {
+                                Ingredient newIngredientSpawner = new Ingredient();
+                                newIngredientSpawner.setup(ingredientArrayList.get(i).getName(), ingredientArrayList.get(i).getXPos(), ingredientArrayList.get(i).getYPos(), ingredientArrayList.get(i).getWidth(), ingredientArrayList.get(i).getHeight(), ingredientArrayList.get(i).getBaseImagePath(), ingredientArrayList.get(i).getTopImagePath());
+                                ingredientArrayList.add(newIngredientSpawner);
+                            }
+
+                            activeGrabbedIngredient = i;
+                            isGrabbingIngredient = true;
+                            return;
+                        }
+                    }
+                    isGrabbingIngredient = false;
+                }
+
+                if(isGrabbingFood) {
                     isGrabbingFood = false;
                 }
 
                 if(isGrabbingIngredient) {
-                    addIngedientToFood();
-                }
-
-                if(!isGrabbingIngredient && !isGrabbingFood) {
-                    // checkMouseOverItem may return -1, this means no food is being grabbed
-                    activeGrabbedIngredient = checkMouseOverIngredientItem(mouseCoordinate.getX(), mouseCoordinate.getY());
-                    if(activeGrabbedIngredient != -1) {
-                        isGrabbingIngredient = true;
-                    }
-                } else {
                     isGrabbingIngredient = false;
+
+                    for (int i = 0; i < foodArrayList.size(); i++) {
+                        if(areaChecker(foodArrayList.get(i).getXPos(), foodArrayList.get(i).getYPos(), foodArrayList.get(i).getWidth(), foodArrayList.get(i).getHeight(), mouseCoordinate.getX(), mouseCoordinate.getY())) {
+                            System.out.println("ingredient over food: " + i);
+                            Ingredient activeIngredient = ingredientArrayList.get(activeGrabbedIngredient);
+                            foodArrayList.get(i).addIngredient(activeIngredient.getName(), activeIngredient.getBaseBufferedImage(), activeIngredient.getTopBufferedImage());
+                            ingredientArrayList.remove(activeGrabbedIngredient);
+                            return;
+                        }
+                    }
                 }
             }
 
@@ -214,7 +211,8 @@ public class GameField extends JPanel {
                     spawners.getJSONObject(i).getInt("width"),
                     spawners.getJSONObject(i).getInt("height"),
                     Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString(),
-                    Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString()
+                    Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString(),
+                    i
             );
             foodArrayList.add(newFoodSpawner);
         }
