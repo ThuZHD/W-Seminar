@@ -109,6 +109,11 @@ public class GameField extends JPanel {
                 }
 
                 if(isGrabbingFood) {
+                    if(areaChecker(200, 110, 250, 250, mouseCoordinate.getX(), mouseCoordinate.getY())) {
+                        System.out.println("mouse over customer");
+                        debugCustomer.submitFood(foodArrayList.get(activeGrabbedFood).getIngredients());
+                    }
+
                     isGrabbingFood = false;
                 }
 
@@ -214,8 +219,6 @@ public class GameField extends JPanel {
             if(i == 0) {
                 possibleFood.put("baseImageBase", Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString());
                 possibleFood.put("baseImageTop", Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString());
-
-                debugCustomer.setup(200, 110, 250, 250, "/Users/brunobeuttler/Desktop/everything/Code/W-Sem/Mods/Döner Updated/Customer.png", possibleFood);
             }
 
             Food newFoodSpawner = new Food();
@@ -233,8 +236,18 @@ public class GameField extends JPanel {
     }
 
     public void setupIngredientSpawnersInField(JSONArray spawners, String relativePath) {
+        possibleFood.put("ingredients", new JSONArray());
+
+
         System.out.println(spawners);
         for (int i = 0; i < spawners.length(); i++) {
+            JSONObject newPossibleIngredient = new JSONObject();
+            newPossibleIngredient.put("name", spawners.getJSONObject(i).getString("name"));
+            newPossibleIngredient.put("baseImage", Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString());
+            newPossibleIngredient.put("topImage", Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString());
+
+            possibleFood.getJSONArray("ingredients").put(newPossibleIngredient);
+
             Ingredient newIngredient = new Ingredient();
             newIngredient.setup(
                     spawners.getJSONObject(i).getString("name"),
@@ -247,6 +260,8 @@ public class GameField extends JPanel {
             );
             ingredientArrayList.add(newIngredient);
         }
+
+        debugCustomer.setup(200, 110, 250, 250, Path.of(relativePath, "Customer.png").toString(), Path.of(relativePath, "speech.png").toString(), possibleFood);
     }
 
     public void setUpBackgroundImage(String imagePath) {
