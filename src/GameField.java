@@ -1,4 +1,5 @@
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
@@ -23,10 +24,15 @@ public class GameField extends JPanel {
     int activeGrabbedFood = -1;
     int activeGrabbedIngredient = -1;
 
+    JSONObject possibleFood = new JSONObject();
+
     ArrayList<Food> foodArrayList = new ArrayList<Food>();
     ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>();
 
     BufferedImage backgroundImage;
+
+    Customer debugCustomer = new Customer();
+
 
     //
     // Functions
@@ -66,8 +72,6 @@ public class GameField extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                System.out.println("DEBUG COORDINATES: " + mouseCoordinate.getX() + " | " + mouseCoordinate.getY());
-
                 if(!isGrabbingFood && !isGrabbingIngredient) {
 
                     for (int i = 0; i < foodArrayList.size(); i++) {
@@ -175,6 +179,9 @@ public class GameField extends JPanel {
 
         g.setColor(Color.BLACK);
 
+        debugCustomer.draw((Graphics2D) g);
+
+
         if(isGrabbingFood) {
             foodArrayList.get(activeGrabbedFood).setPos(mouseCoordinate.getX() - 50, mouseCoordinate.getY() - 50);
         }
@@ -204,6 +211,13 @@ public class GameField extends JPanel {
 
     public void setupFoodSpawnersInField(JSONArray spawners, String relativePath) {
         for (int i = 0; i < spawners.length(); i++) {
+            if(i == 0) {
+                possibleFood.put("baseImageBase", Path.of(relativePath, spawners.getJSONObject(i).getString("base")).toString());
+                possibleFood.put("baseImageTop", Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString());
+
+                debugCustomer.setup(200, 110, 250, 250, "/Users/brunobeuttler/Desktop/everything/Code/W-Sem/Mods/Döner Updated/Customer.png", possibleFood);
+            }
+
             Food newFoodSpawner = new Food();
             newFoodSpawner.setup(
                     spawners.getJSONObject(i).getInt("xPos"),

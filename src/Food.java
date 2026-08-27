@@ -1,3 +1,5 @@
+import org.json.JSONArray;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -103,5 +105,9 @@ public class Food {
 
         System.out.println("added new Ingredient: " + name);
         System.out.println("this is added to the kebab: " + addedIngredients);
+    }
+
+    public ArrayList<String> getIngredients() {
+        return addedIngredients;
     }
 }
