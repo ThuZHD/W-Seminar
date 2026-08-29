@@ -38,6 +38,7 @@ public class Ingredient {
     public int getHeight() {return this.height;}
     public String getBaseImagePath() {return this.baseImagePath;}
     public String getTopImagePath() {return this.topImagePath;}
+    public boolean getIsSpawner() {return isSpawnBase;}
 
     public BufferedImage getBaseBufferedImage() {return this.base;}
     public BufferedImage getTopBufferedImage() {return this.top;}

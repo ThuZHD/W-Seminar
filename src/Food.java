@@ -47,6 +47,7 @@ public class Food {
     public String getTopImagePath() {return this.topImagePath;}
     public String getBaseImagePath() {return this.baseImagePath;}
     public int getDebugIndex() {return this.debugIndex;}
+    public boolean getIsSpawner() {return isSpawnBase;}
 
     //
     // Functions

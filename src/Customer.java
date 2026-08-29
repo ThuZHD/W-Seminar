@@ -2,6 +2,9 @@ import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +25,22 @@ public class Customer {
     ArrayList<BufferedImage> topIngredientImages = new ArrayList<BufferedImage>();
 
     ArrayList<String> order = new ArrayList<String>();
+
+    int bonusScore = 1000;
+
+    Timer bonusTimer = new Timer(10, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            bonusScore--;
+
+            if (bonusScore <= 0) {
+                bonusScore = 0;
+                bonusTimer.stop();
+            }
+
+            bonusTimer.start();
+        }
+    });
 
     public int getXPos() {return xPos;}
     public int getYPos() {return yPos;}
@@ -56,6 +75,8 @@ public class Customer {
                 }
             }
         }
+
+        bonusTimer.start();
     }
 
     public void draw(Graphics2D g) {
@@ -99,5 +120,9 @@ public class Customer {
         } else {
             return false;
         }
+    }
+
+    public int getTimeBonus() {
+        return bonusScore;
     }
 }

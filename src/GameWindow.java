@@ -10,7 +10,7 @@ public class GameWindow extends JFrame {
 
     // PathFinder is responsible for opening a file selector window and returning the path of the main JSON file
     PathFinder pf = new PathFinder();
-    String path = pf.getPath();
+    String path = pf.getPath(true);
 
     String fullPath = path;
 

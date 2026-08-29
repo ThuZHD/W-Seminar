@@ -3,7 +3,11 @@ import java.awt.Frame;
 import java.io.FilenameFilter;
 
 public class PathFinder {
-    public static String getPath() {
+    public static String getPath(boolean isDebugMode) {
+        if(isDebugMode) {
+            return "/Users/brunobeuttler/Desktop/everything/Code/W-Sem/Mods/Döner Updated/kebab.json";
+        }
+
         FileDialog fileDialog = new FileDialog((Frame) null, "JSON Datei auswählen");
         fileDialog.setFilenameFilter(new FilenameFilter() {
             @Override
