@@ -56,7 +56,6 @@ public class Food {
     public boolean disableSpawn() {
         if(isSpawnBase) {
             isSpawnBase = false;
-            System.out.println("spawner disabled");
             return true;
         }
         return false;
@@ -103,9 +102,6 @@ public class Food {
         baseIngredientImages.add(baseImage);
         topIngredientImages.add(topImage);
         addedIngredients.add(name);
-
-        System.out.println("added new Ingredient: " + name);
-        System.out.println("this is added to the kebab: " + addedIngredients);
     }
 
     public ArrayList<String> getIngredients() {
