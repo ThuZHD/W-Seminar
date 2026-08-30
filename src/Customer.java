@@ -28,6 +28,7 @@ public class Customer {
 
     int bonusScore = 1000;
 
+    // calculates extra points for being fast
     Timer bonusTimer = new Timer(10, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {

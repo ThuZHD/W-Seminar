@@ -41,8 +41,8 @@ public class GameWindow extends JFrame {
 
         if(path != "error" && path.endsWith(".json")) {
             System.out.println(modManager.setupFoodSpawners(path));
-            gameField.setupFoodSpawnersInField(modManager.setupFoodSpawners(path), directoryPath);
-            gameField.setupIngredientSpawnersInField(modManager.setupIngredientSpawners(path), directoryPath);
+            gameField.setupFoodSpawnersInGameField(modManager.setupFoodSpawners(path), directoryPath);
+            gameField.setupIngredientSpawnersInGameField(modManager.setupIngredientSpawners(path), directoryPath);
             gameField.setUpBackgroundImage(Paths.get(directoryPath, "background.png").toString());
         }
     }

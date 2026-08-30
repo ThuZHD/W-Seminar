@@ -10,15 +10,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
 public class GameField extends JPanel {
+    // used for pausing the game after failure
     boolean isGameRunning = true;
 
     public Coordinate mouseCoordinate = new Coordinate(0,0);
@@ -29,12 +30,14 @@ public class GameField extends JPanel {
     int activeGrabbedFood = 0;
     int activeGrabbedIngredient = 0;
 
-    int startFoodSpawnersAmount = 0;
-    int startIngredientSpawnersAmount = 0;
+    // mod-food filled with every possible ingredient, used for creating customer orders
     JSONObject possibleFood = new JSONObject();
 
+    // list of all foods and ingredients on the screen
     ArrayList<Food> foodArrayList = new ArrayList<Food>();
     ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>();
+
+    // customer array, element may be null, in this case the slot is empty and a new customer can fill it
     ArrayList<Customer> customers = new ArrayList<Customer>(Arrays.asList(null, null, null));
 
     BufferedImage backgroundImage;
@@ -42,13 +45,18 @@ public class GameField extends JPanel {
     // used for images in mod folder
     String modRelativePath;
 
+    // score gets rounded after game over into an integer
     float score = 0;
 
+    int highscore;
+
     // spawns a new customer every 10 seconds
-    Timer customerTimer = new Timer(5000, new ActionListener() {
+    Timer customerTimer = new Timer(3000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            // check every customer slot
             for (int i = 0; i < 3; i++) {
+                // if customer slot is empty, spawn a new customer there
                 if(customers.get(i) == null) {
                     System.out.println("spawning customer on slot " + i);
                     Customer debugCustomer = new Customer();
@@ -56,7 +64,16 @@ public class GameField extends JPanel {
                     customers.set(i, debugCustomer);
                     return;
                 } else if (customers.get(0) != null && customers.get(1) != null && customers.get(2) != null) {
+                    // game over
                     System.out.println("game over, to many customers");
+
+                    try {
+                        BufferedReader bfro = new BufferedReader(new FileReader(Paths.get(modRelativePath, "highscore.txt").toString()));
+                        highscore = Integer.parseInt(bfro.readLine());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
                     isGameRunning = false;
                 }
             }
@@ -96,7 +113,11 @@ public class GameField extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(!isGameRunning) {
-                    resetGame();
+                    try {
+                        resetGame();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
 
@@ -126,9 +147,8 @@ public class GameField extends JPanel {
         }
     }
 
+    // dynamically adds points to the score, may result in a float number
     void addScore(int delay, int addedScore) {
-        System.out.println(score);
-
         Timer delayTimer = new Timer(delay / 100, null);
         delayTimer.addActionListener(new ActionListener() {
             int count = 0;
@@ -142,15 +162,20 @@ public class GameField extends JPanel {
             }
         });
         delayTimer.start();
-//        displayScore = score;
     }
 
-    void resetGame() {
+    // clears all customers and every food/ingredient which isn't a spawner
+    void resetGame() throws IOException {
         isGameRunning = true;
 
         customers.set(0, null);
         customers.set(1, null);
         customers.set(2, null);
+
+        if (score > highscore) {
+            System.out.println("I tried to scream");
+            Files.writeString(Paths.get(modRelativePath, "highscore.txt"), String.valueOf((int) score));
+        }
 
         score = 0;
 
@@ -267,7 +292,7 @@ public class GameField extends JPanel {
         }
     }
 
-    public void setupFoodSpawnersInField(JSONArray spawners, String relativePath) {
+    public void setupFoodSpawnersInGameField(JSONArray spawners, String relativePath) {
         modRelativePath = relativePath;
 
         for (int i = 0; i < spawners.length(); i++) {
@@ -287,13 +312,11 @@ public class GameField extends JPanel {
                     i
             );
             foodArrayList.add(newFoodSpawner);
-            startFoodSpawnersAmount++;
         }
     }
 
-    public void setupIngredientSpawnersInField(JSONArray spawners, String relativePath) {
+    public void setupIngredientSpawnersInGameField(JSONArray spawners, String relativePath) {
         possibleFood.put("ingredients", new JSONArray());
-
 
         for (int i = 0; i < spawners.length(); i++) {
             JSONObject newPossibleIngredient = new JSONObject();
@@ -314,7 +337,6 @@ public class GameField extends JPanel {
                     Path.of(relativePath, spawners.getJSONObject(i).getString("top")).toString()
             );
             ingredientArrayList.add(newIngredient);
-            startIngredientSpawnersAmount++;
         }
 
         customerTimer.start();
@@ -327,6 +349,11 @@ public class GameField extends JPanel {
             throw new RuntimeException(e);
         }
     }
+
+
+    //
+    // RENDERING
+    //
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -343,28 +370,28 @@ public class GameField extends JPanel {
 
 
         if(isGrabbingFood) {
-            foodArrayList.get(activeGrabbedFood).setPos(mouseCoordinate.getX() - 50, mouseCoordinate.getY() - 50);
+            foodArrayList.get(activeGrabbedFood).setPos(mouseCoordinate.getX() - foodArrayList.get(activeGrabbedFood).getWidth() / 2, mouseCoordinate.getY() - foodArrayList.get(activeGrabbedFood).getHeight() / 2);
         }
 
         if(isGrabbingIngredient) {
-            ingredientArrayList.get(activeGrabbedIngredient).setPos(mouseCoordinate.getX() - 50, mouseCoordinate.getY() - 50);
+            ingredientArrayList.get(activeGrabbedIngredient).setPos(mouseCoordinate.getX() - ingredientArrayList.get(activeGrabbedIngredient).getHeight() / 2, mouseCoordinate.getY() - ingredientArrayList.get(activeGrabbedIngredient).getHeight() / 2);
         }
 
         g.drawImage(backgroundImage, 0, 0, 1280, 720, null);
 
-        for(Food food : foodArrayList) {
+        for(Food food : foodArrayList.reversed()) {
             food.drawBase((Graphics2D) g);
         }
 
-        for(Ingredient ingredient : ingredientArrayList) {
+        for(Ingredient ingredient : ingredientArrayList.reversed()) {
             ingredient.drawBase((Graphics2D) g);
         }
 
-        for(Ingredient ingredient : ingredientArrayList) {
+        for(Ingredient ingredient : ingredientArrayList.reversed()) {
             ingredient.drawTop((Graphics2D) g);
         }
 
-        for(Food food : foodArrayList) {
+        for(Food food : foodArrayList.reversed()) {
             food.drawTop((Graphics2D) g);
         }
 
@@ -377,6 +404,9 @@ public class GameField extends JPanel {
             g.setColor(Color.WHITE);
             g.setFont(new Font("", Font.BOLD, 150));
             g.drawString("GAME OVER", 150, 200);
+            g.setFont(new Font("", Font.BOLD, 50));
+            g.drawString("your score: " + String.valueOf((int) score), 150, 300);
+            g.drawString("your highscore: " + String.valueOf(highscore), 150, 350);
             g.setColor(Color.BLACK);
         }
     }
